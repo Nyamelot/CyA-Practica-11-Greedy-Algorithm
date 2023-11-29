@@ -17,34 +17,34 @@
 #include "point_types.h"
 #include "sub_tree.h"
 
-typedef std::vector<EMST::SubTree> forest;
-  class point_set : public CyA::point_vector {
+using forest = std::vector<EMST::SubTree>;
+  class PointSet : public CyA::PointVector {
    public:
     // Constructor
-    point_set(const CyA::point_vector &points);
-    ~point_set(void);
+    PointSet(const CyA::PointVector &points);
+    ~PointSet(void);
 
     // Methods
     void EMST(void);
 
     // Operator Overloading
-    void write_tree(std::ostream &os) const;
-    void write(std::ostream &os) const;
+    void WriteTree(std::ostream &os) const;
+    void Write(std::ostream &os) const;
 
     // Getters
-    inline const CyA::tree& get_tree(void) const { return emst_; }
-    inline const CyA::point_vector& get_points(void) const { return *this; }
-    inline const double GetCost(void) const { return compute_cost(); }
+    inline const CyA::Tree& GetTree(void) const { return emst_; }
+    inline const CyA::PointVector& GetPoints(void) const { return *this; }
+    inline const double GetCost(void) const { return ComputeCost(); }
 
    private:
-    CyA::tree emst_;
-    void compute_arc_vector(CyA::arc_vector &av) const;
-    void find_incident_subtrees(const forest& st, const CyA::arc &a, int& i, int& j) const;
-    void merge_subtrees(forest& st, const CyA::arc &a, int i, int j) const;
+    CyA::Tree emst_;
+    void ComputeArcVector(CyA::ArcVector &av) const;
+    void FindIncidentSubtrees(const forest& st, const CyA::Arc &a, int& i, int& j) const;
+    void MergeSubtrees(forest& st, const CyA::Arc &a, int i, int j) const;
 
-    double compute_cost(void) const;
+    double ComputeCost(void) const;
 
-    double euclidean_distance(const CyA::arc& a) const;
+    double EuclideanDistance(const CyA::Arc& a) const;
   };
 
 #endif

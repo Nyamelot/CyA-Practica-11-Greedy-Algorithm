@@ -24,22 +24,22 @@ namespace EMST {
     ~SubTree(void);
 
     // Methods
-    void AddArc(const CyA::arc &arc);
-    void AddPoint(const CyA::point &point);
-    bool Contains(const CyA::point &point) const;
-    void Merge(const SubTree &sub_tree, const CyA::weigthed_arc &arc);
+    void AddArc(const CyA::Arc &arc);
+    void AddPoint(const CyA::Point &point);
+    bool Contains(const CyA::Point &point) const;
+    void Merge(const SubTree &sub_tree, const CyA::WeighthedArc &arc);
     
     // Getters
-    inline const CyA::tree& GetArcs(void) const { return arcs_; }
+    inline const CyA::Tree& GetArcs(void) const { return arcs_; }
     inline double GetCost(void) const { return cost_; }
 
    private:
-    CyA::tree arcs_;
-    CyA::point_collection points_;
+    CyA::Tree arcs_;
+    CyA::PointCollection points_;
     double cost_;
   };
 
-  typedef std::vector<SubTree> sub_tree_vector;
+  using sub_tree_vector = std::vector<SubTree>;
 }
 
 #endif

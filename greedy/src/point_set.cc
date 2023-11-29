@@ -12,31 +12,21 @@
 #include "sub_tree.h"
 #include "point_types.h"
 
-void point_set::EMST(void)
-    {
-        CyA::arc_vector av;
-        compute_arc_vector(av);
-
-        forest st;
-
-        for (const CyA::point &p : *this)
-        {
-            EMST::SubTree s;
-            s.AddPoint(p);
-
-            st.push_back(s);
-        }
-
-        for (const CyA::weigthed_arc &a : av)
-        {
-            int i, j;
-            find_incident_subtrees(st, a.second, i, j);
-
-            if (i != j)
-            {
-                merge_subtrees(st, a.second, i, j);
-            }
-        }
-
-        emst_ = st[0].GetArcs();
+void PointSet::EMST(void) {
+  CyA::ArcVector arc_vector;
+  ComputeArcVector(arc_vector);
+  forest sub_tree_vector;
+  for (const CyA::Point &p : *this) {
+    EMST::SubTree s;
+    s.AddPoint(p);
+    sub_tree_vector.push_back(s);
+  }
+  for (const CyA::WeighthedArc &a : arc_vector) {
+    int i, j;
+    FindIncidentSubtrees(sub_tree_vector, a.second, i, j);
+    if (i != j) {
+      MergeSubtrees(sub_tree_vector, a.second, i, j);
     }
+  }
+  emst_ = sub_tree_vector[0].GetArcs();
+}

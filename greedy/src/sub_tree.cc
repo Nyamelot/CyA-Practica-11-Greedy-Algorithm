@@ -20,21 +20,21 @@ namespace EMST {
 
   SubTree::~SubTree(void) {}
 
-  void SubTree::AddArc(const CyA::arc &arc) {
+  void SubTree::AddArc(const CyA::Arc &arc) {
     arcs_.push_back(arc);
     points_.insert(arc.first);
     points_.insert(arc.second);
   }
 
-  void SubTree::AddPoint(const CyA::point &point) {
+  void SubTree::AddPoint(const CyA::Point &point) {
     points_.insert(point);
   }
 
-  bool SubTree::Contains(const CyA::point &point) const {
+  bool SubTree::Contains(const CyA::Point &point) const {
     return points_.find(point) != points_.end();
   }
 
-  void SubTree::Merge(const SubTree &sub_tree, const CyA::weigthed_arc &weight_arc) {
+  void SubTree::Merge(const SubTree &sub_tree, const CyA::WeighthedArc &weight_arc) {
     arcs_.insert(arcs_.end(), sub_tree.arcs_.begin(), sub_tree.arcs_.end());
     arcs_.push_back(weight_arc.second);
     points_.insert(sub_tree.points_.begin(), sub_tree.points_.end());

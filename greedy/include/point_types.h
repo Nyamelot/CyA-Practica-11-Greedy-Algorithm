@@ -19,22 +19,22 @@
 #define MAX_PREC 0
 
 namespace CyA {
-  typedef std::pair<double, double> point;
+  using Point = std::pair<double, double>;
 
-  typedef std::pair<point, point> line;
-  typedef std::vector<point> point_vector;
+  using Line = std::pair<Point, Point>;
+  using PointVector = std::vector<Point>;
 
-  typedef std::pair<point, point> arc;
-  typedef std::pair<double, arc> weigthed_arc;
-  typedef std::vector<weigthed_arc> arc_vector;
+  using Arc = std::pair<Point, Point>;
+  using WeighthedArc = std::pair<double, Arc>;
+  using ArcVector = std::vector<WeighthedArc>;
 
-  typedef std::set<point> point_collection;
+  using PointCollection = std::set<Point>;
 
-  typedef std::vector<arc> tree;
+  using Tree = std::vector<Arc>;
 }
 
-std::ostream& operator<<(std::ostream& os, const CyA::point_vector& ps);
-std::ostream& operator<<(std::ostream& os, const CyA::point& ps);
+std::ostream& operator<<(std::ostream& os, const CyA::PointVector& point_vector);
+std::ostream& operator<<(std::ostream& os, const CyA::Point& point);
 
-std::istream& operator>>(std::istream& is, CyA::point_vector& ps);
-std::istream& operator>>(std::istream& is, CyA::point& ps);
+std::istream& operator>>(std::istream& is, CyA::PointVector& point_vector);
+std::istream& operator>>(std::istream& is, CyA::Point& point);
