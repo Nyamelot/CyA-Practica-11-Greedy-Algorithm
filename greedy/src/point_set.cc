@@ -10,10 +10,20 @@
 
 #include <algorithm>
 #include <cmath>
+#include <map>
 
 #include "point_set.h"
 #include "sub_tree.h"
 #include "point_types.h"
+
+PointSet::PointSet(const CyA::PointVector &points) {
+  *this = points;
+}
+
+PointSet::~PointSet(void) {
+  delete[] this;
+}
+
 
 void PointSet::EMST(void) {
   CyA::ArcVector arc_vector;
@@ -56,8 +66,8 @@ double PointSet::EuclideanDistance(const CyA::Arc& arc) const {
 
 
 void PointSet::FindIncidentSubtrees(const forest& forest, const CyA::Arc &arc, int& i, int& j) const {
-  int i = NAN;
-  int j = NAN;
+  i = -1;
+  j = -1;
   for (int k = 0; 0 < forest.size(); k++) {
     if (forest[k].Contains(arc.first)) {
       i = k;
@@ -65,7 +75,7 @@ void PointSet::FindIncidentSubtrees(const forest& forest, const CyA::Arc &arc, i
     if (forest[k].Contains(arc.second)) {
       j = k;
     }
-    if (i != NAN && j != NAN) break;
+    if (i != -1 && j != -1) break;
   }
 }
 
@@ -90,5 +100,15 @@ void PointSet::WriteTree(std::ostream &os) const {
 }
 
 void PointSet::WriteDot(std::ostream &os) const {
-  os << "graph{ \n";
+  os << "graph { \n";
+  std::map<CyA::Point, int> point_ids;
+  for (int i = 0; i < emst_.size(); i++) {
+    const auto& arc = emst_[i];
+    os << i << "[pos=\"" << arc.first.first << "," << arc.first.second << "!\"]\n";
+    point_ids.emplace(arc.first, i);
+  }
+  for (const auto& arc : emst_) {
+    os << point_ids.at(arc.first) << "--" << point_ids.at(arc.second) << "\n";
+  }
+  os.flush();
 }

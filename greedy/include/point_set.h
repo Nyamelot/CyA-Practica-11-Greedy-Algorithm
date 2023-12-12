@@ -39,6 +39,7 @@ using forest = std::vector<EMST::SubTree>;
 
    private:
     CyA::Tree emst_;
+    CyA::PointVector points_;
     void ComputeArcVector(CyA::ArcVector &arc_vector) const;
     void FindIncidentSubtrees(const forest& forest, const CyA::Arc &arc, int& i, int& j) const;
     void MergeSubtrees(forest& forest, const CyA::Arc &arc, int i, int j) const;
