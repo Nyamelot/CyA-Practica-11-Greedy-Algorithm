@@ -30,6 +30,7 @@ using forest = std::vector<EMST::SubTree>;
     // Operator Overloading
     void WriteTree(std::ostream &os) const;
     void Write(std::ostream &os) const;
+    void WriteDot(std::ostream &os) const;
 
     // Getters
     inline const CyA::Tree& GetTree(void) const { return emst_; }

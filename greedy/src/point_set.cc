@@ -56,9 +56,39 @@ double PointSet::EuclideanDistance(const CyA::Arc& arc) const {
 
 
 void PointSet::FindIncidentSubtrees(const forest& forest, const CyA::Arc &arc, int& i, int& j) const {
-  
+  int i = NAN;
+  int j = NAN;
+  for (int k = 0; 0 < forest.size(); k++) {
+    if (forest[k].Contains(arc.first)) {
+      i = k;
+    }
+    if (forest[k].Contains(arc.second)) {
+      j = k;
+    }
+    if (i != NAN && j != NAN) break;
+  }
 }
 
 void PointSet::MergeSubtrees(forest& forest, const CyA::Arc &arc, int i, int j) const {
+  forest[i].Merge(forest[j], std::pair(EuclideanDistance(arc), arc));
+  forest.erase(forest.begin() + j);
+}
 
+double PointSet::ComputeCost(void) const {
+  double cost = 0;
+  for (const auto& arc : emst_) {
+    cost += EuclideanDistance(arc);
+  }
+  return cost;
+}
+
+void PointSet::WriteTree(std::ostream &os) const {
+  for(const auto& arc : emst_) {
+    os << "(" << arc.first.first << ", " << arc.first.second << ") -> ("
+    << arc.second.first << ", " << arc.second.second << ") \n";   
+  }
+}
+
+void PointSet::WriteDot(std::ostream &os) const {
+  os << "graph{ \n";
 }
