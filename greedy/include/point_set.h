@@ -21,8 +21,8 @@ using forest = std::vector<EMST::SubTree>;
   class PointSet : public CyA::PointVector {
    public:
     // Constructor
-    PointSet(const CyA::PointVector &points);
-    ~PointSet(void);
+    PointSet(const CyA::PointVector &points) : points_(points) {}
+    ~PointSet(void) = default;
 
     // Methods
     void EMST(void);

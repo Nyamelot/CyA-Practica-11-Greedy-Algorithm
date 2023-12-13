@@ -11,25 +11,21 @@
 #include <algorithm>
 #include <cmath>
 #include <map>
+#include <set>
 
 #include "point_set.h"
 #include "sub_tree.h"
 #include "point_types.h"
 
-PointSet::PointSet(const CyA::PointVector &points) {
-  *this = points;
-}
-
-PointSet::~PointSet(void) {
-  delete[] this;
-}
-
-
+/**
+ * @brief The method will realize the algorithm euclidean minimum spanning tree
+ * 
+ */
 void PointSet::EMST(void) {
   CyA::ArcVector arc_vector;
   ComputeArcVector(arc_vector);
   forest sub_tree_vector;
-  for (const CyA::Point &point : *this) {
+  for (const CyA::Point &point : points_) {
     EMST::SubTree sub_tree;
     sub_tree.AddPoint(point);
     sub_tree_vector.push_back(sub_tree);
@@ -45,13 +41,18 @@ void PointSet::EMST(void) {
 }
 
 
+/**
+ * @brief The method will create an arc vector using the vector of points of the class
+ * 
+ * @param arc_vector 
+ */
 void PointSet::ComputeArcVector(CyA::ArcVector &arc_vector) const {
   arc_vector.clear();
-  const int n = size();
+  const int n = points_.size();
   for (int i = 0; i < n - 1; ++i) {
-    const CyA::Point &point_i = (*this)[i];
+    const CyA::Point &point_i = points_[i];
     for (int j = i + 1; j < n; ++j) {
-      const CyA::Point &point_j = (*this)[j];
+      const CyA::Point &point_j = points_[j];
       const double dist = EuclideanDistance(std::make_pair(point_i, point_j));
       arc_vector.push_back(std::make_pair(dist, std::make_pair(point_i, point_j)));
     }
@@ -60,11 +61,26 @@ void PointSet::ComputeArcVector(CyA::ArcVector &arc_vector) const {
 }
 
 
+/**
+ * @brief The method will calculate the euclidean distance
+ * 
+ * @param arc 
+ * @return double 
+ */
 double PointSet::EuclideanDistance(const CyA::Arc& arc) const {
-  return sqrt((arc.second.first + arc.first.first) - (arc.second.second + arc.first.second));
+  double euclidean_distance = sqrt((pow(arc.second.first - arc.first.first, 2)) + (pow(arc.second.second - arc.first.second, 2)));
+  return euclidean_distance;
 }
 
 
+/**
+ * @brief The method given an arc will find if any of it´s points is contained in any of the sub trees of forest
+ * 
+ * @param forest 
+ * @param arc 
+ * @param i 
+ * @param j 
+ */
 void PointSet::FindIncidentSubtrees(const forest& forest, const CyA::Arc &arc, int& i, int& j) const {
   i = -1;
   j = -1;
@@ -79,36 +95,72 @@ void PointSet::FindIncidentSubtrees(const forest& forest, const CyA::Arc &arc, i
   }
 }
 
+
+/**
+ * @brief The method will merge sub trees given two points
+ * 
+ * @param forest 
+ * @param arc 
+ * @param i 
+ * @param j 
+ */
 void PointSet::MergeSubtrees(forest& forest, const CyA::Arc &arc, int i, int j) const {
   forest[i].Merge(forest[j], std::pair(EuclideanDistance(arc), arc));
   forest.erase(forest.begin() + j);
 }
 
+
+/**
+ * @brief The method will calculate the cost of the tree
+ * 
+ * @return double 
+ */
 double PointSet::ComputeCost(void) const {
   double cost = 0;
   for (const auto& arc : emst_) {
-    cost += EuclideanDistance(arc);
+    cost = cost + EuclideanDistance(arc);
   }
   return cost;
 }
 
+
+/**
+ * @brief The method will print the tree with it´s cost
+ * 
+ * @param os 
+ */
 void PointSet::WriteTree(std::ostream &os) const {
   for(const auto& arc : emst_) {
     os << "(" << arc.first.first << ", " << arc.first.second << ") -> ("
     << arc.second.first << ", " << arc.second.second << ") \n";   
   }
+  os << "\n";
+  os << ComputeCost() << "\n";
 }
 
+
+/**
+ * @brief The method will print the tree in graphviz style
+ * 
+ * @param os 
+ */
 void PointSet::WriteDot(std::ostream &os) const {
   os << "graph { \n";
   std::map<CyA::Point, int> point_ids;
-  for (int i = 0; i < emst_.size(); i++) {
-    const auto& arc = emst_[i];
-    os << i << "[pos=\"" << arc.first.first << "," << arc.first.second << "!\"]\n";
-    point_ids.emplace(arc.first, i);
+  std::set<CyA::Point> point_collection;
+  for (const auto& arc : emst_) {
+    point_collection.emplace(arc.first);
+    point_collection.emplace(arc.second);
+  }
+  int i = 0;
+  for (const auto& point : point_collection) {
+    os << i << "[pos=\"" << point.first << "," << point.second << "!\"]\n";
+    point_ids.emplace(point, i);
+    i++;
   }
   for (const auto& arc : emst_) {
     os << point_ids.at(arc.first) << "--" << point_ids.at(arc.second) << "\n";
   }
+  os << "}\n";
   os.flush();
 }

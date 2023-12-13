@@ -16,6 +16,7 @@
 #include <sstream>
 #include <optional>
 #include <exception>
+#include <algorithm>
 
 #include "point_types.h"
 #include "file_reader.h"
@@ -33,7 +34,12 @@ const std::string kHelpText =
 "    The program will output the result an Euclidian Minimum Spanning Tree"\
 " of the input points.\n";
 
-
+/**
+ * @brief The function usage of the program that deals with the parameters
+ * 
+ * @param argc 
+ * @param argv 
+ */
 void Usage(int argc, char* argv[]) {
   const std::string kHelp = "--help";
   if (argc == 1) {
@@ -62,81 +68,45 @@ void Usage(int argc, char* argv[]) {
 }
 
 
-// CyA::PointVector FileReader(std::ifstream& input_files) {
-//   CyA::PointVector points;
-//   std::string text_line;
-//   std::getline(input_files, text_line);
-//   int points_amount = stoi(text_line);
-//   while (!input_files.eof()) {
-//     std::getline(input_files, text_line);
-//     std::stringstream number;
-//     std::optional<double> point_x;
-//     std::optional<double> point_y;
-//     for (const auto& character : text_line) {
-//       if (character == ' ') {
-//         number.seekp(0, std::ios::end);
-//         auto offset = number.tellp();
-//         if (offset != 0) {
-//           if (!point_x.has_value()) {
-//             double aux;
-//             number >> aux;
-//             point_x = aux;
-//           } else if (!point_y.has_value()) {
-//             double aux;
-//             number >> aux;
-//             point_y = aux;
-//           } else {
-//             throw std::runtime_error("Invalid Input File Format");
-//           }
-//         } else {
-//           continue;
-//         }
-//       }
-//       if (std::isdigit(character)) {
-//         number << character;
-//         continue;
-//       }
-//       points.emplace_back(point_x.value(), point_y.value());
-//     }
-//   }
-//   return points;
-// }
-
-std::vector<std::string> Split(const std::string& input_string, const char querry_char) {
-  std::vector<std::string> characters;
-  std::stringstream character;
-  for (char symbol : input_string) {
-    if (symbol != querry_char) {
-      character << symbol;
-      continue;
-    }
-    characters.emplace_back(character.str());
-    character.str(std::string());
-  }
-  characters.emplace_back(character.str());
-  return characters;
-}
-
+/**
+ * @brief The function will receive a ifstream file and convert it to a vector of vectors of strings
+ * 
+ * @param input_files 
+ * @return std::vector<std::vector<std::string>> 
+ */
 std::vector<std::vector<std::string>> FileReader(std::ifstream& input_files) {
-  std::vector<std::vector<std::string>> text_file;
-  std::string text_line;
-  while (!input_files.eof()) {
-    std::getline(input_files, text_line);
-    text_file.emplace_back(Split(text_line, ' '));
+  std::vector<std::vector<std::string>> result;
+  std::string line;
+  while (std::getline(input_files, line)) {
+    std::istringstream iss(line);
+    std::vector<std::string> tokens;
+    std::string token;
+    while (iss >> token) {
+      tokens.push_back(token);
+    }
+    result.push_back(tokens);
   }
-  return text_file;
+  input_files.close();
+  return result;
 }
 
+
+/**
+ * @brief The function will convert a vector of vectors of strings, to a vector of points
+ * 
+ * @param text_point 
+ * @return CyA::PointVector 
+ */
 CyA::PointVector TextToPoint(const std::vector<std::vector<std::string>>& text_point) {
   CyA::PointVector points;
   int point_amount = stoi(text_point[0][0]);
-  for (int i = 1; text_point.size(); i++) {
-    points.emplace_back(std::stod(text_point[i][0]), std::stod(text_point[i][1]));
+  for (int i = 1; i < text_point.size(); i++) {
+    points.emplace_back(std::make_pair(std::stod(text_point[i][0]), std::stod(text_point[i][1])));
   }
   if(points.size() < point_amount) {
     std::cerr << "The input points are less than expected" << std::endl;
     exit(EXIT_FAILURE);
-  } else if (points.size() > point_amount) {
+  } else if (points.size() > (point_amount)) {
     std::cerr << "The input points are more than expected" << std::endl;
     exit(EXIT_FAILURE);
   } else {

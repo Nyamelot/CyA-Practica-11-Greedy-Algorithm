@@ -20,20 +20,45 @@ namespace EMST {
 
   SubTree::~SubTree(void) {}
 
+  /**
+   * @brief The method will add an arc to the sub tree
+   * 
+   * @param arc 
+   */
   void SubTree::AddArc(const CyA::Arc &arc) {
     arcs_.push_back(arc);
     points_.insert(arc.first);
     points_.insert(arc.second);
   }
 
+
+  /**
+   * @brief The method will add a point to the sub tree
+   * 
+   * @param point 
+   */
   void SubTree::AddPoint(const CyA::Point &point) {
     points_.insert(point);
   }
 
+  /**
+   * @brief The method will confirm if a given point exist within the sub tree
+   * 
+   * @param point 
+   * @return true 
+   * @return false 
+   */
   bool SubTree::Contains(const CyA::Point &point) const {
     return points_.find(point) != points_.end();
   }
 
+
+  /**
+  * @brief The Method will merge the invoker and a given sub tree
+  * 
+  * @param sub_tree 
+  * @param weight_arc 
+  */
   void SubTree::Merge(const SubTree &sub_tree, const CyA::WeighthedArc &weight_arc) {
     arcs_.insert(arcs_.end(), sub_tree.arcs_.begin(), sub_tree.arcs_.end());
     arcs_.push_back(weight_arc.second);

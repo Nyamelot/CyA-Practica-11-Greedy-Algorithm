@@ -12,6 +12,7 @@
 #include <optional>
 #include <string>
 #include <vector>
+#include <cstring>
 
 #include "file_reader.h"
 #include "point_set.h"
@@ -20,17 +21,20 @@
 int main(int argc, char* argv[]) {
   Usage(argc, argv);
   std::ifstream input_points(argv[1]);
-  std::string d_option = argv[2];
-  std::vector<std::vector<std::string>> text_points = FileReader(input_points);
-  for(const auto& line : text_points) {
-    for(const auto& character : line) {
-      std::cout << character << std::endl;
+  bool d_option = false;
+  if (argc == 3) {
+    if (std::string(argv[2]) == "-d") {
+      d_option = true;
+    } else {
+      std::cerr << "Wrong option, try --help for more information" << std::endl;
+      exit(EXIT_FAILURE);
     }
   }
+  std::vector<std::vector<std::string>> text_points = FileReader(input_points);
   CyA::PointVector points = TextToPoint(text_points);
   PointSet euclidean_tree(points);
   euclidean_tree.EMST();
-  if (!d_option.empty()) {
+  if (d_option) {
     std::string output_name = "output.dot";
     std::ofstream output_dot(output_name);
     if (output_dot.is_open()) {
@@ -40,7 +44,14 @@ int main(int argc, char* argv[]) {
       std::cerr << "Error opening file: " << output_name << std::endl;
     }
   } else {
-    euclidean_tree.WriteTree(std::cout);
+    std::string output_name = "output.txt";
+    std::ofstream output_txt(output_name);
+    if (output_txt.is_open()) {
+      euclidean_tree.WriteTree(output_txt);
+      output_txt.close();
+    } else {
+      std::cerr << "Error opening file: " << output_name << std::endl;
+    }
   }
   return 0;
 }

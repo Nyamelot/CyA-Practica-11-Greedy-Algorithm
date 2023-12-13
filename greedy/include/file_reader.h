@@ -17,8 +17,6 @@
 #include "point_types.h"
 
 void Usage(int argc, char* argv[]);
-// CyA::PointVector FileReader(std::ifstream& input_files);
-std::vector<std::string> Split(const std::string& input_string, const char querry_char);
 std::vector<std::vector<std::string>> FileReader(std::ifstream& input_files);
 CyA::PointVector TextToPoint(const std::vector<std::vector<std::string>>& text_point);
 
