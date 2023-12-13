@@ -24,6 +24,7 @@
 void PointSet::EMST(void) {
   CyA::ArcVector arc_vector;
   ComputeArcVector(arc_vector);
+  int eliminated_arcs = arc_vector.size();
   forest sub_tree_vector;
   for (const CyA::Point &point : points_) {
     EMST::SubTree sub_tree;
@@ -35,8 +36,10 @@ void PointSet::EMST(void) {
     FindIncidentSubtrees(sub_tree_vector, weight_arc.second, i, j);
     if (i != j) {
       MergeSubtrees(sub_tree_vector, weight_arc.second, i, j);
+      eliminated_arcs--;
     }
   }
+  std::cout << "The eliminated arcs are: " <<eliminated_arcs << std::endl;
   emst_ = sub_tree_vector[0].GetArcs();
 }
 

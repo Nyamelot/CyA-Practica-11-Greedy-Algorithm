@@ -1,4 +1,4 @@
-NAME=IB-Practica08-functions
+NAME=CyA-Practica011-EMST
 PROJECT_NAME=function_example
 DIRPATH=$(shell realpath .)
 DIRNAME=$(shell basename $(DIRPATH))

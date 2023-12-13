@@ -34,7 +34,7 @@ using forest = std::vector<EMST::SubTree>;
 
     // Getters
     inline const CyA::Tree& GetTree(void) const { return emst_; }
-    inline const CyA::PointVector& GetPoints(void) const { return *this; }
+    inline const CyA::PointVector& GetPoints(void) const { return points_; }
     inline const double GetCost(void) const { return ComputeCost(); }
 
    private:
