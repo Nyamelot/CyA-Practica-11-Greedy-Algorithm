@@ -6,7 +6,7 @@
 // Práctica 11: Algoritmo Voraz
 // Autor: José Ángel Portillo García
 // Correo: alu0101568232@ull.edu.es
-// Fecha: 29/11/2023
+// Fecha: 07/12/2025
 
 #include <fstream>
 #include <optional>
